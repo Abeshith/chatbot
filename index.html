@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question Answering Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+        }
+        .chat-container {
+            width: 80%;
+            margin: 0 auto;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        .chatbot-image {
+            width: 150px;
+            height: 150px;
+            margin-bottom: 20px;
+            border-radius: 50%;
+        }
+        .chat-input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .chat-button {
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-button:hover {
+            background-color: #0056b3;
+        }
+        .response {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <img src="zoro.jpeg" alt="Chatbot" class="chatbot-image">
+        <h2>Ask Me Anything!</h2>
+        <textarea id="question" class="chat-input" placeholder="Enter your question..."></textarea>
+        <textarea id="context" class="chat-input" placeholder="Enter the context or background..."></textarea>
+        <button id="ask-btn" class="chat-button">Ask</button>
+        <div id="response" class="response" style="display: none;"></div>
+    </div>
+
+    <script>
+        document.getElementById('ask-btn').addEventListener('click', function () {
+            const question = document.getElementById('question').value;
+            const context = document.getElementById('context').value;
+            
+            if (question === "" || context === "") {
+                alert("Please provide both a question and context.");
+                return;
+            }
+
+            fetch('/get_answer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ question: question, context: context })
+            })
+            .then(response => response.json())
+            .then(data => {
+                const answer = data.answer;
+                const responseElement = document.getElementById('response');
+                responseElement.style.display = 'block';
+                responseElement.innerText = "Answer: " + answer;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
